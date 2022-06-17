@@ -2,6 +2,7 @@
     function mounted() {
         getTableData();
     }
+
 )();
   
   //Generating unique ID for new Input
@@ -96,6 +97,7 @@
     if (Object.keys(obj).length) {
       var members = getMembers();
       obj.id = guid();
+      watchTIme(obj.id);
       members.push(obj);
       const data = JSON.stringify(members);
       localStorage.setItem("members", data);
@@ -252,8 +254,26 @@
   }
 
 
-  // function watchTIme(id){
-  //   const id = id;
-  //   const storageUsers = JSON.parse(localStorage.getItem("members"));
-  //   let newData = [];
-  // }
+  /**
+   * A setTime Interval that updates the time to zero and increases the
+   * cost of the parking lot by $7.5 every 30mins which also indirectly 
+   * equates to $15 every 1hour eventually, but the timer doesn't give
+   * a visual pointer of that, It could be a later update, but Time 
+   * is out on me rn. It is tracked by the guid from the top
+   **/
+  function watchTIme(ID){
+    const storageUsers = JSON.parse(localStorage.getItem("members"));
+    let newSTore = []; 
+    setInterval(()=>{
+      storageUsers.forEach((el) =>{
+        if(el.id == ID){
+          el['time'] = '00:00';
+          el['cost'] = Number(el['cost']+ 7.5)
+
+          newSTore.push(el);
+        }
+        newSTore.push(el);
+      })
+    },1800000)
+    getTableData();
+  }
