@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, shrink-to-fit=no">
+
+  <title>PLMS</title>
+  <meta name="description" content="Parking Lot - Register and Get your Parking Slot.">
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:700,900&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="page-header-extended">
+      <h4 class="page-title">Parking Lot Management System</h4>
+    </div>
+    <div class="info-table-header-block">
+      <input type="text" placeholder="Search vehicles by Car No, email, slot etc." id="member_search" onkeyup="getTableData()">
+    </div>
+    <div class="starter-template">
+      <div class="info-table-header-block">
+        <button type="button slot" class="btn btn-primary slot-button" data-toggle="modal" data-target="#addnewModal">
+          Add new vehicle
+        </button>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="addnewModal" tabindex="-1" role="dialog" aria-labelledby="addnewModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="addnewModalTitle">Add New Vehicle</h4>
+            </div>
+
+            <!-- User Create Modal Start -->
+            <div class="modal-body">
+              <form id="saveMemberInfo">
+                <div class="form-group">
+                  <label for="car_no">Car NO 
+                    <span class="required-field">*</span>
+                  </label>
+                  <input type="text" class="form-control" placeholder="Enter Car's Plate No (stored securely):" id="car_no" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email
+                    <span class="required-field">*</span>
+                  </label>
+                  <input type="email" class="form-control" placeholder="Enter email" id="email" required />
+                </div>
+                <div class="form-group">
+                  <label for="slot">Slot NO
+                    <span class="required-field">*</span>
+                  </label>
+                  <input type="number" class="form-control" placeholder="Enter a vacant slot number (1-15)" id="slot" required min="1" max="15" maxlength="2">
+                </div>
+                <div class="form-group">
+                    <label for="vehicle">Vehicle Type
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="vehicleType" id="small" checked>
+                            <label class="form-check-label" for="small">
+                            <span style="font-weight: 0; font-size:12px;">Small - $60</span> 
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="vehicleType" id="large">
+                            <label class="form-check-label" for="large">
+                            <span style="font-weight: 0; font-size:12px;">Large - $100</span> 
+                            </label>
+                          </div>
+                    </label>
+                </div>
+                <div class="modal-footer-extended">
+                  <button type="submit" class="btn btn-primary">Create</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+              </form>
+            </div>
+            <!-- User Create Modal End -->
+          </div>
+        </div>
+      </div>
+
+      <div class="show-table-info hide">
+        <div class="alert alert-info center">
+          <strong>Parking lot is empty</strong>
+        </div>
+      </div>
+
+      <table id="member_table" class="table">
+        <thead>
+          <tr>
+            <th>-/#/-</th>
+            <th>
+              Car NO
+            </th>
+            <th>
+              Email
+            </th>
+            <th>
+                Time (+ Extra)
+            </th>
+            <th>
+                Cost
+            </th>
+            <th>
+              Slot NO
+            </th>
+            <th>
+                Vehicle Type
+            </th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+      </table>
+
+      <footer></footer>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Dialog Start -->
+  <div id="show_user_info">
+    <div class="modal fade" id="deleteDialog" tabindex="-1" role="dialog" aria-labelledby="deleteDialogTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="deleteDialog">Payment!</h4>
+          </div>
+          <div class="modal-body">
+            <h4>Want to pay for vehicle's parking time?</h4>
+            <input type="hidden" id="deleted-member-id" value="">
+            <div class="modal-footer-extended">
+              <button class="btn btn-danger" onclick="deleteMemberData()">Pay</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Delete Confirmation Dialog End -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
