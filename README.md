@@ -50,3 +50,10 @@ I broke the challenge into three major stages.
 > for everyone to see everyone elses Plate number, and mail..
 > I collected the mail just in case there is a possible need to pass information
 > over to the parked customer.
+
+## Time Counter and Price Increase
+> The time counter was implemented using a set time interval for every 30mins(1800000 sec)
+> Instead of going for the 1hr for $15, the Interval takes the 30mins route to be able to 
+> make the update reflect on the cost by getting the previous price with the getItem local-
+> storage method and then add the new price with the setItem and also change the time from 
+> 30:00 to 00:00. 
