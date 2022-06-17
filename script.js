@@ -10,17 +10,24 @@
   }
 
   //Create and Store New Member from the MODAL
-  let el = document.querySelector("#saveMemberInfo");
+  const el = document.querySelector("#saveMemberInfo");
   if (el) {
     el.addEventListener("submit", saveMemberInfo);
   }
 
+  //Save Member Function 
   function saveMemberInfo(e) {
     e.preventDefault();
 
-    const keys = ["car_no", "email", "d_o_a", "slot"];
+    /**
+     * Form element array to cycle over to retrieve values
+     * and object to store in element and value pair, later
+     * used to for storing in Browser localStorage  
+    **/
+    const keys = ["car_no", "email", "slot"];
     const obj = {};
 
+    //Ternery defined variable to store vehicle type from radio button
     let vehicle = document.getElementById('small').checked ? 'small' : 'large';
 
     keys.forEach((item, index) => {
@@ -28,26 +35,48 @@
       if (result) {
 
         obj[item] = result;
+
       }
     });obj['vehicle'] = vehicle;
 
+    //Non User-Defined Data(Like Time and Cost)
+    obj['time'] = '30:00'
+    obj['cost'] = (vehicle === 'small') ? 60 : 100
 
+
+    /**
+     * Calling data from local storage
+     * Also checking if slot is available
+     * everything happens in a loop to check through
+    **/
     var members = getMembers();
     members.forEach((item) => {
       if (obj.slot === item.slot) {
-        if (obj.d_o_a === item.d_o_a) {
-          alert("Can't allocate slot. Slot is not availabe on the selected day.");
+          alert("Slot currently in use");
           window.location.reload();
           this.preventDefault();
           return false;
-        }
       }
     });
 
+    /**
+     * Checks if parking lot is empty or not
+     * with a UI feedback, hiding and showing
+     * as the case maybe
+    **/
     if (!members.length) {
       $(".show-table-info").addClass("hide");
     }
 
+
+    /**
+     * After going through verifying and checking 
+     * there's no slot use collision and storage,
+     * and checking that the object  used above has
+     * items in it, it's saved to local storage,the
+     * form is cleaned, the new element rendered and
+     * the modal box with the form is removed.
+    **/
     if (Object.keys(obj).length) {
       var members = getMembers();
       obj.id = guid();
@@ -59,17 +88,8 @@
       $("#addnewModal").modal("hide");
     }
   }
-
-
-  /**
-   * Clear Create New Member Form Data0
-   **/
-  function clearFields() {
-    $("#input_form")[0].reset();
-  }
-  /**
-   * Get All Members already stored into the local storage
-   */
+  
+  //Get All Members previously stored in the local storage
   function getMembers() {
     const memberRecord = localStorage.getItem("members");
     let members = [];
@@ -80,6 +100,9 @@
       return members;
     }
   }
+
+
+
   /**
    * Populating Table with stored data
    */
@@ -88,10 +111,11 @@
     const searchKeyword = $("#member_search").val();
     const members = getMembers();
     const filteredMembers = members.filter(
-      ({ car_no, email, d_o_a, slot }, index) =>
+      ({ car_no, email, time, cost, slot }, index) =>
         car_no.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        d_o_a.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        time.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        cost.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         slot.toLowerCase().includes(searchKeyword.toLowerCase())
     );
     if (!filteredMembers.length) {
@@ -103,6 +127,9 @@
       insertIntoTableView(item, index + 1);
     });
   }
+
+
+
   /**
    * Inserting data into the table of the view
    *
@@ -113,41 +140,31 @@
     const table = document.getElementById("member_table");
     const row = table.insertRow();
     const idCell = row.insertCell(0);
-    const firstNameCell = row.insertCell(1);
-    const lastNameCell = row.insertCell(2);
-    const emailCell = row.insertCell(3);
-    const dateOfBirthCell = row.insertCell(4);
+    const carNoCell = row.insertCell(1);
+    const emailCell = row.insertCell(2);
+    const timeCell = row.insertCell(3);
+    const costCell = row.insertCell(4);
     const slotCell = row.insertCell(5);
-    const actionCell = row.insertCell(6);
+    const vehicleCell = row.insertCell(6);
+    const actionCell = row.insertCell(7);
     idCell.innerHTML = tableIndex;
-    firstNameCell.innerHTML = item.car_no;
-    lastNameCell.innerHTML = item.owner_name;
+    carNoCell.innerHTML = item.car_no;
     emailCell.innerHTML = item.email;
-    dateOfBirthCell.innerHTML = item.d_o_a;
+    timeCell.innerHTML = item.time;
+    costCell.innerHTML = item.cost;
     slotCell.innerHTML = `<span class="tag">${item.slot}</span>`;
+    vehicleCell.innerHTML = item.vehicle;
     const guid = item.id;
-    actionCell.innerHTML = `<button class="btn btn-sm btn-secondary" onclick="showMemberData(${guid})">View</button> <button class="btn btn-sm btn-primary" onclick="showEditModal(${guid})">Edit</button> <button class="btn btn-sm btn-danger" onclick="showDeleteModal(${guid})">Delete</button>`;
+    actionCell.innerHTML = `<button class="btn btn-sm btn-danger" onclick="showDeleteModal(${guid})">PAY</button>`;
   }
+
+  
   /**
    * Get Total Row of Table
    **/
   function getTotalRowOfTable() {
     const table = document.getElementById("member_table");
     return table.rows.length;
-  }
-  /**
-   * Show Single Member Data into the modal
-   *
-   * @param {string} id
-   */
-  function showMemberData(id) {
-    const allMembers = getMembers();
-    const member = allMembers.find((item) => item.id == id);
-    $("#show_car_no").val(member.car_no);
-    $("#show_email").val(member.email);
-    $("#show_d_o_a").val(member.d_o_a);
-    $("#show_slot").val(member.slot);
-    $("#showModal").modal();
   }
 
   /**
@@ -159,6 +176,8 @@
     $("#deleted-member-id").val(id);
     $("#deleteDialog").modal();
   }
+
+
   /**
    * Delete single member
    */
@@ -174,6 +193,9 @@
     $("#deleteDialog").modal("hide");
     getTableData();
   }
+
+
+
   /**
    * Sorting table data through type, e.g: car_no, email etc.
    *
