@@ -105,8 +105,6 @@
 
     }
 
-    console.log(obj);
-
   }
   
 
@@ -122,7 +120,26 @@
     }
   }
 
+  //Payment Record Storage
+  function setPayments(pays){
+    const paymentRecord = localStorage.getItem("payments");
+    if(!paymentRecord){
+      localStorage.setItem('payments',String(pays))
+    }else{
+      localStorage.setItem('payments', String(Number(paymentRecord)+Number(pays)))
+    }
+  }
 
+  //get Payment and render to payment dashboard page
+  function getPayment(){
+    let valueHolder = document.querySelector('#value');
+    const paymentRecord = localStorage.getItem("payments");
+    if(!paymentRecord){
+      valueHolder.innerText = ('($)0');
+    }else{
+      valueHolder.innerText = '($)'+localStorage.getItem('payments')
+    }
+  }
 
   /**
    * Populating Table with stored data
@@ -146,8 +163,6 @@
       insertIntoTableView(item, index + 1);
     });
   }
-
-
 
   /**
    * Inserting data into the table of the view
@@ -226,9 +241,19 @@
     const storageUsers = JSON.parse(localStorage.getItem("members"));
     let newData = [];
     newData = storageUsers.filter((item, index) => item.id != id);
+    let paymentData = [];
+    paymentData = storageUsers.filter((item, index) => item.id == id);
+    setPayments(paymentData[0].cost)
     const data = JSON.stringify(newData);
     localStorage.setItem("members", data);
     $("#member_table").find("tr:not(:first)").remove();
     $("#deleteDialog").modal("hide");
     getTableData();
   }
+
+
+  // function watchTIme(id){
+  //   const id = id;
+  //   const storageUsers = JSON.parse(localStorage.getItem("members"));
+  //   let newData = [];
+  // }

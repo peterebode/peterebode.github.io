@@ -26,7 +26,7 @@
     </div>
 
     <div class="info-table-header-block">
-      <input type="text" placeholder="Search vehicle by Car No, email, slot. | 'Your search is not affected by the asterisks'" id="member_search" onkeyup="getTableData()">
+      <input type="text" placeholder="Search vehicle by Car No, email, slot. 'Your search is not affected by asterisks'" id="member_search" onkeyup="getTableData()">
     </div>
     
     <div class="starter-template">
@@ -47,7 +47,7 @@
             <div class="modal-body">
               <form id="saveMemberInfo">
                 <div class="form-group">
-                  <label for="car_no">Plate NO 
+                  <label for="car_no">Car NO 
                     <span class="required-field">*</span>
                   </label>
                   <input type="text" class="form-control" placeholder="Enter Car's Plate No (stored securely):" id="car_no" required />
@@ -102,7 +102,7 @@
           <tr>
             <th>-SLOTS-</th>
             <th>
-              Car Plate NO
+              Car NO
             </th>
             <th>
               Email
@@ -127,7 +127,7 @@
       <footer></footer>
     </div>
     <div class="info-table-header-block" style="width: 20%; float: right;">
-      <button type="button slot" class="btn btn-primary slot-button">
+      <button type="button slot" class="btn btn-primary slot-button" onclick="window.open('./dashboard.html', '_self')">
         View Dashboard 
       </button>
     </div>
