@@ -105,9 +105,10 @@
 
     }
 
+    console.log(obj);
+
   }
   
-
 
   //Get All Members previously stored in the local storage
   function getMembers() {
@@ -131,11 +132,9 @@
     const searchKeyword = $("#member_search").val();
     const members = getMembers();
     const filteredMembers = members.filter(
-      ({ car_no, email, time, cost, slot }, index) =>
+      ({ car_no, email, slot }, index) =>
         car_no.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        time.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        cost.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         slot.toLowerCase().includes(searchKeyword.toLowerCase())
     );
     if (!filteredMembers.length) {
@@ -168,8 +167,8 @@
     const vehicleCell = row.insertCell(6);
     const actionCell = row.insertCell(7);
     idCell.innerHTML = tableIndex;
-    carNoCell.innerHTML = item.car_no;
-    emailCell.innerHTML = item.email;
+    carNoCell.innerHTML = obfuscateIT(item.car_no);
+    emailCell.innerHTML = obfMail(item.email);
     timeCell.innerHTML = item.time;
     costCell.innerHTML = item.cost;
     slotCell.innerHTML = `<span class="tag">${item.slot}</span>`;
@@ -199,6 +198,26 @@
 
 
   /**
+   * Starring function for Plate Numbers
+  **/
+  function obfuscateIT(item){
+    let entry = String(item);
+    let entryCentre = Math.floor(entry.length/2);
+    let newText = entry[0] + '*'.repeat(entryCentre) + entry.slice(entry.length - entryCentre+1)
+    return newText;
+  }
+
+  //Starring the mail Add
+  function obfMail(item){
+    let entry = String(item);
+    let side1 = entry.split('@');
+    let oIT1 = obfuscateIT(side1[0]);
+    let summary = oIT1+'@'+side1[1]
+    return summary;
+    }
+
+
+  /**
    * Delete(Pay) single member
    */
   function deleteMemberData() {
@@ -213,35 +232,3 @@
     $("#deleteDialog").modal("hide");
     getTableData();
   }
-
-
-
-  /**
-   * Sorting table data through type, e.g: car_no, email etc.
-   *
-   * @param {string} type
-   */
-  function sortBy(type) {
-    $("#member_table").find("tr:not(:first)").remove();
-    var totalClickOfType = parseInt(localStorage.getItem(type));
-    if (!totalClickOfType) {
-      totalClickOfType = 1;
-      localStorage.setItem(type, totalClickOfType);
-    } else {
-      if (totalClickOfType == 1) {
-        totalClickOfType = 2;
-      } else {
-        totalClickOfType = 1;
-      }
-      localStorage.setItem(type, totalClickOfType);
-    }
-    var searchKeyword = $("#member_search").val();
-    var members = getMembers();
-    var sortedMembers = members.sort(function (a, b) {
-      return totalClickOfType == 2 ? a[type] > b[type] : a[type] < b[type];
-    });
-    sortedMembers.forEach(function (item, index) {
-      insertIntoTableView(item, index + 1);
-    });
-  }
-  
