@@ -15,6 +15,7 @@
     el.addEventListener("submit", saveMemberInfo);
   }
 
+
   //Save Member Function 
   function saveMemberInfo(e) {
     e.preventDefault();
@@ -44,6 +45,8 @@
     obj['cost'] = (vehicle === 'small') ? 60 : 100
 
 
+    let vehicleSizeAllocation = 0;
+
     /**
      * Calling data from local storage
      * Also checking if slot is available
@@ -52,12 +55,25 @@
     var members = getMembers();
     members.forEach((item) => {
       if (obj.slot === item.slot) {
-          alert("Slot currently in use");
+          alert("Slot currently in use. Try again with an unoccupied slot(1-15)");
           window.location.reload();
           this.preventDefault();
           return false;
       }
+
+      if(item.vehicle === 'large'){
+          vehicleSizeAllocation++;
+      }
+
     });
+
+    //Checking for number of large Vehicles
+    if(vehicleSizeAllocation >= 5){
+        alert("Slots for Large Vehicles exhausted");
+        window.location.reload();
+        this.preventDefault();
+        return false;
+    }
 
     /**
      * Checks if parking lot is empty or not
@@ -86,9 +102,13 @@
       el.reset();
       insertIntoTableView(obj, getTotalRowOfTable());
       $("#addnewModal").modal("hide");
+
     }
+
   }
   
+
+
   //Get All Members previously stored in the local storage
   function getMembers() {
     const memberRecord = localStorage.getItem("members");
@@ -158,7 +178,7 @@
     actionCell.innerHTML = `<button class="btn btn-sm btn-danger" onclick="showDeleteModal(${guid})">PAY</button>`;
   }
 
-  
+
   /**
    * Get Total Row of Table
    **/
@@ -168,7 +188,7 @@
   }
 
   /**
-   * Show Delete Confirmation Dialog Modal
+   * Show Delete/Pay Confirmation Dialog Modal
    *
    * @param {int} id
    **/
@@ -179,7 +199,7 @@
 
 
   /**
-   * Delete single member
+   * Delete(Pay) single member
    */
   function deleteMemberData() {
     const id = $("#deleted-member-id").val();
